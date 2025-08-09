@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SWE-Bench Progression Timeline</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3"></script>
+</head>
+<body>
+    <header>
+        <h1>SWE-Bench Progression Timeline</h1>
+        <p>Historical progression of AI model performance on the SWE-Bench coding benchmark</p>
+    </header>
+
+    <main>
+        <section class="chart-container">
+            <h2>Performance Timeline</h2>
+            <div class="chart-wrapper">
+                <canvas id="timeline-chart"></canvas>
+            </div>
+        </section>
+        
+        <section class="insights">
+            <h2>Key Insights</h2>
+            <div class="insights-grid">
+                <div class="insight-card">
+                    <h3>🚀 Exponential Progress</h3>
+                    <p>AI coding performance jumped from 2% (Claude 2, Nov 2023) to 75% (Claude 4.1 Opus, Aug 2025) in just 21 months - a 37x improvement.</p>
+                </div>
+                
+                <div class="insight-card">
+                    <h3>👨‍💻 Human Parity Achieved</h3>
+                    <p>Current top models (Claude Opus 75%, GPT-5 65%) have surpassed professional human performance (70%) and are approaching expert levels (85%).</p>
+                </div>
+                
+                <div class="insight-card">
+                    <h3>💪 Compute Scaling Laws</h3>
+                    <p>Strong correlation between FLOPS capacity and performance. Nvidia's roadmap (60x compute increase by 2027) suggests continued rapid progress.</p>
+                </div>
+                
+                <div class="insight-card">
+                    <h3>🧠 Context is King</h3>
+                    <p>Context length scaling from 8K to 50M tokens (6000x increase) enables handling entire codebases, documentation, and complex multi-file tasks.</p>
+                </div>
+                
+                <div class="insight-card">
+                    <h3>🎯 Near-Perfect by 2027</h3>
+                    <p>Claude Opus projection suggests 98% performance by mid-2027, approaching the theoretical 100% ceiling on SWE-bench tasks.</p>
+                </div>
+                
+                <div class="insight-card">
+                    <h3>⚡ Three-Horse Race</h3>
+                    <p>Anthropic (Claude) leads with 75%, OpenAI (GPT) reaches 65%, Google (Gemini Pro) at 54%. All three are accelerating rapidly with different architectural approaches.</p>
+                </div>
+                
+                <div class="insight-card">
+                    <h3>📊 Projection Methodology</h3>
+                    <p>Claude Opus projections combine dual scaling factors: 60% weight on FLOPS capacity (Nvidia roadmap) + 40% on context length growth, using exponential curves with diminishing returns toward 100% ceiling.</p>
+                </div>
+                
+                <div class="insight-card">
+                    <h3>🎚️ Why Not 100%?</h3>
+                    <p>Even 98% projection reflects realistic constraints: edge cases requiring human judgment, multi-step reasoning limits, ambiguous requirements, and the inherent complexity of some real-world software engineering tasks.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

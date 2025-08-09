@@ -1,0 +1,94 @@
+{
+  "drivers": [
+    {
+      "date": "2023-03-01",
+      "model_name": "GPT-4",
+      "compute_flops": 2.15e25,
+      "context_tokens": 8192
+    },
+    {
+      "date": "2023-11-01", 
+      "model_name": "Claude 2",
+      "compute_flops": 1.0e25,
+      "context_tokens": 100000
+    },
+    {
+      "date": "2024-04-01",
+      "model_name": "GPT-4 Turbo", 
+      "compute_flops": 2.15e25,
+      "context_tokens": 128000
+    },
+    {
+      "date": "2024-05-01",
+      "model_name": "GPT-4o",
+      "compute_flops": 3.0e25,
+      "context_tokens": 128000
+    },
+    {
+      "date": "2024-06-01",
+      "model_name": "Claude 3.5 Sonnet",
+      "compute_flops": 2.5e25,
+      "context_tokens": 200000
+    },
+    {
+      "date": "2024-10-01",
+      "model_name": "GPT-4o Updated",
+      "compute_flops": 3.5e25,
+      "context_tokens": 128000
+    },
+    {
+      "date": "2025-02-01",
+      "model_name": "Claude 3.7 Sonnet",
+      "compute_flops": 4.0e25,
+      "context_tokens": 200000
+    },
+    {
+      "date": "2025-04-01",
+      "model_name": "GPT-4.1",
+      "compute_flops": 8.0e25,
+      "context_tokens": 1000000
+    },
+    {
+      "date": "2025-05-01",
+      "model_name": "GPT-o3",
+      "compute_flops": 1.2e26,
+      "context_tokens": 1000000
+    },
+    {
+      "date": "2025-08-01",
+      "model_name": "GPT-5",
+      "compute_flops": 2.0e26,
+      "context_tokens": 1000000
+    },
+    {
+      "date": "2025-12-01",
+      "model_name": "Extended Context Models",
+      "compute_flops": 3.0e26,
+      "context_tokens": 2000000
+    },
+    {
+      "date": "2026-03-01",
+      "model_name": "Lightning Attention Era",
+      "compute_flops": 4.5e26,
+      "context_tokens": 5000000
+    },
+    {
+      "date": "2026-06-01",
+      "model_name": "Rubin R100 Generation",
+      "compute_flops": 6.0e26,
+      "context_tokens": 10000000
+    },
+    {
+      "date": "2026-12-01",
+      "model_name": "Advanced Long Context",
+      "compute_flops": 8.0e26,
+      "context_tokens": 20000000
+    },
+    {
+      "date": "2027-06-01",
+      "model_name": "Ultra Long Context",
+      "compute_flops": 1.2e27,
+      "context_tokens": 50000000
+    }
+  ]
+}
