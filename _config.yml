@@ -1,0 +1,55 @@
+title: SWE-Bench Progression Analysis
+description: Interactive visualization of AI model performance on coding benchmarks with hardware-based projections through 2027
+author: AI Performance Research
+email: contact@example.com
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+theme: minima
+
+# Site settings
+url: "https://anttitevanlinna.github.io"
+baseurl: "/swe-bench-progression"
+
+# Navigation
+header_pages:
+  - index.html
+  - PROJECTION_METHODOLOGY.md
+  - METHODOLOGY_VALIDITY_ANALYSIS.md
+
+# Collections
+collections:
+  docs:
+    output: true
+    permalink: /:collection/:name/
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# Exclude files
+exclude:
+  - server.rb
+  - data-structure.md
+  - README.md
+  - Gemfile*
+  - node_modules/
+  - vendor/
+
+# Include files
+include:
+  - data/
+
+# Social links (optional)
+github_username: anttitevanlinna
+
+# SEO settings
+twitter:
+  username: 
+  card: summary_large_image
+
+# Analytics (optional - uncomment and add your GA4 ID)
+# google_analytics: G-XXXXXXXXXX

@@ -1,3 +1,9 @@
+---
+layout: default
+title: Projection Methodology
+description: Detailed methodology for SWE-bench performance projections
+---
+
 # SWE-Bench Projection Methodology
 
 ## Executive Summary

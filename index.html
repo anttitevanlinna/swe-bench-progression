@@ -1,19 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SWE-Bench Progression Timeline</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3"></script>
-</head>
-<body>
+---
+layout: default
+title: SWE-Bench Progression Timeline
+description: Interactive visualization of AI model performance on coding benchmarks
+---
     <header>
         <h1>SWE-Bench Progression Timeline</h1>
         <p>Historical progression of AI model performance on the SWE-Bench coding benchmark</p>
     </header>
+
+    <div class="methodology-callout">
+        <h3>📋 Methodology & Analysis</h3>
+        <p><strong>Note:</strong> These are preliminary results based on available data. Please consult both methodology and critical analysis documents:</p>
+        <div class="methodology-links">
+            <a href="PROJECTION_METHODOLOGY.md" class="method-link">📊 Projection Methodology</a>
+            <a href="METHODOLOGY_VALIDITY_ANALYSIS.md" class="method-link">🔍 Critical Validity Analysis</a>
+        </div>
+        <p class="disclaimer">Projections are speculative and subject to significant uncertainty. External validation recommended.</p>
+    </div>
 
     <main>
         <section class="chart-container">
@@ -69,6 +72,4 @@
         </section>
     </main>
 
-    <script src="script.js"></script>
-</body>
-</html>
+    <script src="{{ "/script.js" | relative_url }}"></script>
