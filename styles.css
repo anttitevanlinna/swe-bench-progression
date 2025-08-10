@@ -177,6 +177,24 @@ main {
 .insight-card:nth-child(7) { border-left-color: #34495e; }
 .insight-card:nth-child(8) { border-left-color: #e67e22; }
 
+/* Footer */
+.site-footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+    padding: 2rem 0;
+    margin-top: 3rem;
+}
+
+.footer-wrapper {
+    text-align: center;
+    padding: 0 2rem;
+}
+
+.site-footer p {
+    margin: 0;
+    color: #6c757d;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
     header h1 {
