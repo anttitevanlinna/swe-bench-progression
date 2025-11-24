@@ -4,26 +4,24 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This repository is a Jekyll-based GitHub Pages site that visualizes the progression of AI model performance on the SWE-bench coding benchmark. It features interactive charts showing historical and projected performance data for various AI models (Claude, GPT, Gemini) along with underlying hardware drivers (FLOPS capacity and context length).
+This repository is a static web application that visualizes the progression of AI model performance on the SWE-bench coding benchmark. It features interactive charts showing historical and projected performance data for various AI models (Claude, GPT, Gemini) along with underlying hardware drivers (FLOPS capacity and context length).
 
 ## Development Commands
 
 ### Local Development
 ```bash
-# Install dependencies
-bundle install
-
-# Serve the site locally (Jekyll)
-bundle exec jekyll serve
-
-# Alternative local server (Ruby WEBrick)
+# Serve the site locally using Ruby WEBrick server
 ruby server.rb
+
+# Alternative: Use any static file server
+python -m http.server 8000
+# or
+npx http-server
 ```
 
 ### Build and Deploy
 - The site auto-deploys to GitHub Pages when pushed to main branch
-- Jekyll configuration in `_config.yml` handles GitHub Pages deployment
-- No manual build step required for production
+- Static HTML/CSS/JS files - no build step required
 
 ## Architecture
 
@@ -39,8 +37,8 @@ ruby server.rb
 - `data/underlying-drivers.json` - Hardware roadmap data (FLOPS, context length)
 - JSON structure includes model metadata, performance scores, dates, and organizational attribution
 
-**Jekyll Site Structure**
-- `_config.yml` - Jekyll configuration with GitHub Pages settings
+**Site Structure**
+- `index.html` - Main page with template includes
 - `_layouts/default.html` - Main page template
 - `_includes/` - Reusable components (header, footer, head, social)
 
@@ -74,13 +72,13 @@ ruby server.rb
 ```
 /
 ├── data/                    # JSON data files
-├── _layouts/               # Jekyll templates  
+├── _layouts/               # HTML templates  
 ├── _includes/              # Reusable components
 ├── *.md                    # Methodology documentation
 ├── index.html              # Main visualization page
 ├── script.js              # Chart logic and projections
 ├── styles.css             # Styling
-└── server.rb              # Alternative local server
+└── server.rb              # Local development server
 ```
 
 ## Development Notes

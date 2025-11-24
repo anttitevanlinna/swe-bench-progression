@@ -1,4 +1,5 @@
 // Load and display SWE-Bench results
+console.log('SWE-Bench script loaded - v2024.11.23-tokens-debug');
 async function loadResults() {
     try {
         const [resultsResponse, driversResponse] = await Promise.all([
@@ -21,6 +22,21 @@ async function loadResults() {
 
 function displayChart(results, drivers) {
     const ctx = document.getElementById('timeline-chart').getContext('2d');
+    
+    // Helper function to find closest driver data for a given date
+    function findClosestDriver(date, drivers) {
+        let closest = drivers[0];
+        let minDiff = Math.abs(new Date(date) - new Date(drivers[0].date));
+        
+        for (let driver of drivers) {
+            const diff = Math.abs(new Date(date) - new Date(driver.date));
+            if (diff < minDiff) {
+                minDiff = diff;
+                closest = driver;
+            }
+        }
+        return closest;
+    }
     
     // Group data by model for different lines
     const modelData = {};
@@ -67,10 +83,15 @@ function displayChart(results, drivers) {
         if (!modelData[modelKey]) {
             modelData[modelKey] = [];
         }
+        
+        // Find corresponding context window data
+        const closestDriver = findClosestDriver(result.date, drivers);
+        
         modelData[modelKey].push({
             x: result.date,
             y: result.score,
-            modelName: result.model_name // Keep original name for tooltip
+            modelName: result.model_name, // Keep original name for tooltip
+            contextTokens: closestDriver.context_tokens
         });
     });
     
@@ -173,19 +194,37 @@ function displayChart(results, drivers) {
         yAxisID: 'y1'
     });
 
-    // Context length unified timeline (historical + future projections)
-    const allContextData = allDrivers.map(d => ({
-        x: d.date,
-        y: Math.min(100, (Math.log10(d.context_tokens) - Math.log10(8192)) / (Math.log10(50000000) - Math.log10(8192)) * 100)
-    }));
+    // Context length timeline - show highest context window available at each time
+    // First, collect all unique dates from both results and drivers
+    const allDates = [...new Set([...results.map(r => r.date), ...drivers.map(d => d.date)])].sort();
+    
+    const contextEvolutionData = allDates.map(date => {
+        // Find highest context window available at or before this date
+        const availableDrivers = drivers.filter(d => new Date(d.date) <= new Date(date));
+        if (availableDrivers.length === 0) return null;
+        
+        const highestContext = Math.max(...availableDrivers.map(d => d.context_tokens));
+        const modelWithHighest = availableDrivers.find(d => d.context_tokens === highestContext);
+        
+        return {
+            x: date,
+            y: Math.min(100, (Math.log10(highestContext) - Math.log10(8192)) / (Math.log10(50000000) - Math.log10(8192)) * 100),
+            originalTokens: highestContext,
+            modelName: modelWithHighest.model_name
+        };
+    }).filter(d => d !== null);
     
     datasets.push({
-        label: 'Context Length (tokens)',
-        data: allContextData,
+        label: 'Context Window (M Tokens)',
+        data: contextEvolutionData,
         borderColor: '#9B59B6',
-        backgroundColor: 'transparent',
+        backgroundColor: '#9B59B6',
         borderDash: [5, 5],
-        pointRadius: 3,
+        pointRadius: 6,
+        pointHoverRadius: 10,
+        pointBackgroundColor: '#9B59B6',
+        pointBorderColor: '#FFFFFF',
+        pointBorderWidth: 2,
         tension: 0.1,
         fill: false,
         showLine: true,
@@ -209,6 +248,16 @@ function displayChart(results, drivers) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            interaction: {
+                intersect: true,
+                mode: 'point'
+            },
+            plugins: {
+                tooltip: {
+                    enabled: false,
+                    external: function() { return false; }
+                }
+            },
             scales: {
                 x: {
                     type: 'time',
@@ -216,8 +265,10 @@ function displayChart(results, drivers) {
                         parser: 'yyyy-MM-dd',
                         displayFormats: {
                             day: 'MMM dd',
-                            month: 'MMM yyyy'
-                        }
+                            month: 'MMM yyyy',
+                            year: 'MMM yyyy'
+                        },
+                        tooltipFormat: 'MMM dd, yyyy'
                     },
                     min: '2023-11-01',
                     max: '2027-06-01',
@@ -258,116 +309,161 @@ function displayChart(results, drivers) {
                     display: false
                 },
                 tooltip: {
+                    enabled: true,
+                    displayColors: false,
                     callbacks: {
-                        afterLabel: function(context) {
-                            const dataPoint = context.raw;
-                            return dataPoint.modelName ? `Model: ${dataPoint.modelName}` : '';
+                        title: function() {
+                            return '';  // No title/date
+                        },
+                        label: function(context) {
+                            console.log('Tooltip context:', {
+                                datasetLabel: context.dataset.label,
+                                dataIndex: context.dataIndex,
+                                parsed: context.parsed,
+                                dataPoint: context.dataset.data[context.dataIndex]
+                            });
+                            
+                            let label = context.dataset.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            
+                            // Custom formatting for different datasets
+                            if (context.dataset.label === 'Context Window (M Tokens)') {
+                                // Show context window size and model with highest
+                                const dataPoint = context.dataset.data[context.dataIndex];
+                                const contextMTokens = (dataPoint.originalTokens / 1000000).toFixed(1);
+                                // Extract just the model name from long descriptive names
+                                let modelName = dataPoint.modelName;
+                                if (modelName.includes('(') && modelName.includes('/')) {
+                                    // For complex names like "Current Max Context (Claude 4 Beta/GPT-4.1/Gemini 2.0)"
+                                    // Just pick the first model mentioned
+                                    const match = modelName.match(/\(([^/]+)/);
+                                    if (match) {
+                                        modelName = match[1].trim();
+                                    }
+                                }
+                                label = `${contextMTokens}M tokens (${modelName})`;
+                                console.log('Context window tooltip:', label);
+                            } else if (context.dataset.label === 'FLOPS') {
+                                label += 'Normalized ' + Math.round(context.parsed.y) + '%';
+                                console.log('FLOPS tooltip:', label);
+                            } else {
+                                // Model performance points - show performance first, then context window
+                                const dataPoint = context.dataset.data[context.dataIndex];
+                                const score = Math.round(context.parsed.y * 100) / 100;
+                                const contextMTokens = (dataPoint.contextTokens / 1000000).toFixed(1);
+                                label += `${dataPoint.modelName} -> ${score}% (${contextMTokens}M tokens)`;
+                                console.log('Model performance tooltip:', label);
+                            }
+                            
+                            return label;
                         }
                     }
                 },
                 annotation: {
                     annotations: {
+                        claudeSonnetLabel: {
+                            type: 'label',
+                            xValue: '2025-08-01',
+                            yValue: 75,
+                            content: 'Claude Sonnet 4.5',
+                            backgroundColor: 'rgba(217, 119, 6, 0.9)',
+                            color: 'white',
+                            font: {
+                                size: 10,
+                                weight: 'bold'
+                            },
+                            padding: 3,
+                            borderRadius: 3
+                        },
+                        gptCodexLabel: {
+                            type: 'label',
+                            xValue: '2025-09-01',
+                            yValue: 72,
+                            content: 'GPT-5.1-Codex-Max',
+                            backgroundColor: 'rgba(16, 185, 129, 0.9)',
+                            color: 'white',
+                            font: {
+                                size: 10,
+                                weight: 'bold'
+                            },
+                            padding: 3,
+                            borderRadius: 3
+                        },
+                        geminiLabel: {
+                            type: 'label',
+                            xValue: '2025-07-01',
+                            yValue: 68,
+                            content: 'Gemini 3.0 Pro',
+                            backgroundColor: 'rgba(66, 133, 244, 0.9)',
+                            color: 'white',
+                            font: {
+                                size: 10,
+                                weight: 'bold'
+                            },
+                            padding: 3,
+                            borderRadius: 3
+                        },
+                        projectionLabel: {
+                            type: 'label',
+                            xValue: '2026-12-01',
+                            yValue: 95,
+                            content: 'Claude Opus Projection',
+                            backgroundColor: 'rgba(180, 83, 9, 0.7)',
+                            color: 'white',
+                            font: {
+                                size: 10,
+                                style: 'italic'
+                            },
+                            padding: 3,
+                            borderRadius: 3
+                        },
                         expertLabel: {
                             type: 'label',
-                            xValue: '2024-03-01',
+                            xValue: '2024-06-01',
                             yValue: 85,
                             content: 'Expert Human',
                             backgroundColor: 'rgba(44, 62, 80, 0.8)',
                             color: 'white',
                             font: {
-                                size: 11
+                                size: 10
                             },
-                            padding: 4,
+                            padding: 3,
                             borderRadius: 3
                         },
                         professionalLabel: {
                             type: 'label',
-                            xValue: '2024-03-01',
+                            xValue: '2024-06-01',
                             yValue: 70,
                             content: 'Professional Human',
                             backgroundColor: 'rgba(127, 140, 141, 0.8)',
                             color: 'white',
                             font: {
-                                size: 11
+                                size: 10
                             },
-                            padding: 4,
+                            padding: 3,
                             borderRadius: 3
                         },
                         noviceLabel: {
                             type: 'label',
-                            xValue: '2024-03-01',
+                            xValue: '2024-06-01',
                             yValue: 40,
                             content: 'Novice Human',
                             backgroundColor: 'rgba(189, 195, 199, 0.8)',
                             color: 'white',
                             font: {
-                                size: 11
+                                size: 10
                             },
-                            padding: 4,
-                            borderRadius: 3
-                        },
-                        claudeSonnetLabel: {
-                            type: 'label',
-                            xValue: '2025-03-01',
-                            yValue: 72,
-                            content: 'Claude Sonnet',
-                            backgroundColor: 'rgba(217, 119, 6, 0.9)',
-                            color: 'white',
-                            font: {
-                                size: 11,
-                                weight: 'bold'
-                            },
-                            padding: 4,
-                            borderRadius: 3
-                        },
-                        claudeOpusLabel: {
-                            type: 'label',
-                            xValue: '2025-06-01',
-                            yValue: 74,
-                            content: 'Claude Opus',
-                            backgroundColor: 'rgba(180, 83, 9, 0.9)',
-                            color: 'white',
-                            font: {
-                                size: 11,
-                                weight: 'bold'
-                            },
-                            padding: 4,
-                            borderRadius: 3
-                        },
-                        gptLabel: {
-                            type: 'label',
-                            xValue: '2025-07-01',
-                            yValue: 65,
-                            content: 'GPT',
-                            backgroundColor: 'rgba(16, 185, 129, 0.9)',
-                            color: 'white',
-                            font: {
-                                size: 11,
-                                weight: 'bold'
-                            },
-                            padding: 4,
-                            borderRadius: 3
-                        },
-                        geminiLabel: {
-                            type: 'label',
-                            xValue: '2025-04-01',
-                            yValue: 53,
-                            content: 'Gemini',
-                            backgroundColor: 'rgba(66, 133, 244, 0.9)',
-                            color: 'white',
-                            font: {
-                                size: 11,
-                                weight: 'bold'
-                            },
-                            padding: 4,
+                            padding: 3,
                             borderRadius: 3
                         },
                         flopsLabel: {
                             type: 'label',
-                            xValue: '2025-12-01',
-                            yValue: 70,
+                            xValue: '2026-03-01',
+                            yValue: 60,
                             content: 'FLOPS',
-                            backgroundColor: 'rgba(231, 76, 60, 0.9)',
+                            backgroundColor: 'rgba(231, 76, 60, 0.8)',
                             color: 'white',
                             font: {
                                 size: 10,
@@ -378,10 +474,10 @@ function displayChart(results, drivers) {
                         },
                         contextLabel: {
                             type: 'label',
-                            xValue: '2026-09-01',
-                            yValue: 80,
-                            content: 'Context Length',
-                            backgroundColor: 'rgba(155, 89, 182, 0.9)',
+                            xValue: '2026-06-01',
+                            yValue: 75,
+                            content: 'Context Window (M Tokens)',
+                            backgroundColor: 'rgba(155, 89, 182, 0.8)',
                             color: 'white',
                             font: {
                                 size: 10,
@@ -390,26 +486,36 @@ function displayChart(results, drivers) {
                             padding: 3,
                             borderRadius: 3
                         },
-                        projectionLabel: {
+                        context200K: {
                             type: 'label',
-                            xValue: '2026-12-01',
-                            yValue: 95,
-                            content: 'Opus Projection',
-                            backgroundColor: 'rgba(180, 83, 9, 0.7)',
+                            xValue: '2024-06-01',
+                            yValue: 45,
+                            content: '200K Plateau',
+                            backgroundColor: 'rgba(155, 89, 182, 0.6)',
                             color: 'white',
                             font: {
-                                size: 10,
+                                size: 9,
                                 style: 'italic'
                             },
-                            padding: 3,
-                            borderRadius: 3
+                            padding: 2,
+                            borderRadius: 2
+                        },
+                        context1M: {
+                            type: 'label', 
+                            xValue: '2025-01-01',
+                            yValue: 55,
+                            content: '1M Plateau',
+                            backgroundColor: 'rgba(155, 89, 182, 0.8)',
+                            color: 'white',
+                            font: {
+                                size: 9,
+                                style: 'italic'
+                            },
+                            padding: 2,
+                            borderRadius: 2
                         }
                     }
                 }
-            },
-            interaction: {
-                intersect: true,
-                mode: 'point'
             }
         }
     });
@@ -506,9 +612,10 @@ function generateProjections(analysis, drivers) {
         const baseLogCompute = Math.log10(2.0e26); // Current Opus baseline
         const computeBoost = (logCompute - baseLogCompute) * 8; // Compute scaling effect
         
-        // Context length scaling factor (log scale)
+        // Context length scaling factor (log scale) 
+        // Use tokens directly
         const logContext = Math.log10(driver.context_tokens);
-        const baseLogContext = Math.log10(1000000); // Current context baseline
+        const baseLogContext = Math.log10(1000000); // Current context baseline in tokens
         const contextBoost = (logContext - baseLogContext) * 5; // Context scaling effect
         
         // Combined effect with diminishing returns
