@@ -269,6 +269,21 @@
       "source_url": "https://www.anthropic.com/news/claude-sonnet-4-5",
       "paper_title": "Introducing Claude Sonnet 4.5",
       "notes": "Claude Sonnet 4.5 - current leader on SWE-bench Verified"
+    },
+    {
+      "id": "claude_opus_45_2025",
+      "date": "2025-11-24",
+      "model_name": "Claude Opus 4.5",
+      "model_version": "claude-opus-4.5",
+      "organization": "Anthropic",
+      "score": 80.9,
+      "total_instances": 500,
+      "solved_instances": 405,
+      "benchmark_version": "swe-bench-verified",
+      "methodology": "reasoning",
+      "source_url": "https://www.anthropic.com/news/claude-opus-4-5",
+      "paper_title": "Introducing Claude Opus 4.5",
+      "notes": "First model to cross 80% threshold on SWE-bench Verified - new leader"
     }
   ]
 }
