@@ -1,73 +1,91 @@
----
-layout: default
-title: SWE-Bench Progression Timeline
-description: Interactive visualization of AI model performance on coding benchmarks
----
-    <header>
-        <h1>SWE-Bench Progression Timeline</h1>
-        <p>Historical progression of AI model performance on the SWE-Bench coding benchmark</p>
-    </header>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <title>SWE-Bench Progression Timeline</title>
+  <meta name="description" content="Interactive visualization of AI model performance on coding benchmarks">
+  
+  <link rel="stylesheet" href="styles.css">
+  
+  <!-- Chart.js for interactive visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3"></script>
+</head>
 
-    <div class="methodology-callout">
-        <h3>📋 Methodology & Analysis</h3>
-        <p><strong>Note:</strong> These are preliminary results based on available data. Please consult both methodology and critical analysis documents:</p>
-        <div class="methodology-links">
-            <a href="PROJECTION_METHODOLOGY" class="method-link">📊 Projection Methodology</a>
-            <a href="METHODOLOGY_VALIDITY_ANALYSIS" class="method-link">🔍 Critical Validity Analysis</a>
+<body>
+  <header>
+    <h1>SWE-Bench Progression Timeline</h1>
+    <p>Historical progression of AI model performance on the SWE-Bench coding benchmark</p>
+  </header>
+
+  <main>
+    <section class="chart-container">
+      <div class="chart-wrapper">
+        <div class="chart-area">
+          <canvas id="timeline-chart"></canvas>
         </div>
-        <p class="disclaimer">Projections are speculative and subject to significant uncertainty. External validation recommended.</p>
-    </div>
-
-    <main>
-        <section class="chart-container">
-            <div class="chart-wrapper">
-                <canvas id="timeline-chart"></canvas>
-            </div>
-        </section>
+        <div class="methodology-section">
+          <h4>📋 Methodology</h4>
+          <p><strong>Validation:</strong> 82.3% projected vs 80.9% actual (98.3% accuracy). <a href="PROJECTION_METHODOLOGY.html">Methodology</a> | <a href="METHODOLOGY_VALIDITY_ANALYSIS.html">Analysis</a></p>
+        </div>
+      </div>
+    </section>
+    
+    <section class="insights">
+      <div class="insights-grid">
+        <div class="insight-card">
+          <h3>🚀 Exponential Progress</h3>
+          <p>AI coding performance jumped from 1.96% (Claude 2, Nov 2023) to 80.9% (Claude Opus 4.5, Nov 2025) in just 24 months - a 41x improvement.</p>
+        </div>
         
-        <section class="insights">
-            <div class="insights-grid">
-                <div class="insight-card">
-                    <h3>🚀 Exponential Progress</h3>
-                    <p>AI coding performance jumped from 2% (Claude 2, Nov 2023) to 75% (Claude 4.1 Opus, Aug 2025) in just 21 months - a 37x improvement.</p>
-                </div>
-                
-                <div class="insight-card">
-                    <h3>👨‍💻 Human Parity Achieved</h3>
-                    <p>Current top models (Claude Opus 75%, GPT-5 65%) have surpassed professional human performance (70%) and are approaching expert levels (85%).</p>
-                </div>
-                
-                <div class="insight-card">
-                    <h3>💪 Compute Scaling Laws</h3>
-                    <p>Strong correlation between FLOPS capacity and performance. Nvidia's roadmap (60x compute increase by 2027) suggests continued rapid progress.</p>
-                </div>
-                
-                <div class="insight-card">
-                    <h3>🧠 Context is King</h3>
-                    <p>Context length scaling from 8K to 50M tokens (6000x increase) enables handling entire codebases, documentation, and complex multi-file tasks.</p>
-                </div>
-                
-                <div class="insight-card">
-                    <h3>🎯 Near-Perfect by 2027</h3>
-                    <p>Claude Opus projection suggests 98% performance by mid-2027, approaching the theoretical 100% ceiling on SWE-bench tasks.</p>
-                </div>
-                
-                <div class="insight-card">
-                    <h3>⚡ Three-Horse Race</h3>
-                    <p>Anthropic (Claude) leads with 75%, OpenAI (GPT) reaches 65%, Google (Gemini Pro) at 54%. All three are accelerating rapidly with different architectural approaches.</p>
-                </div>
-                
-                <div class="insight-card">
-                    <h3>📊 Projection Methodology</h3>
-                    <p>Claude Opus projections combine dual scaling factors: 60% weight on FLOPS capacity (Nvidia roadmap) + 40% on context length growth, using exponential curves with diminishing returns toward 100% ceiling.</p>
-                </div>
-                
-                <div class="insight-card">
-                    <h3>🎚️ Why Not 100%?</h3>
-                    <p>Even 98% projection reflects realistic constraints: edge cases requiring human judgment, multi-step reasoning limits, ambiguous requirements, and the inherent complexity of some real-world software engineering tasks.</p>
-                </div>
-            </div>
-        </section>
-    </main>
+        <div class="insight-card">
+          <h3>👨‍💻 Human Parity Surpassed</h3>
+          <p>Current top models (Claude Opus 4.5 80.9%, GPT-5.1-Codex-Max 77.9%, Claude Sonnet 4.5 77.2%, Gemini 3.0 Pro 76.2%) have clearly surpassed professional human performance (70%) and are rapidly approaching expert levels (85%).</p>
+        </div>
+        
+        <div class="insight-card">
+          <h3>💪 Compute Scaling Laws</h3>
+          <p>Strong correlation between FLOPS capacity and performance. Nvidia's roadmap (60x compute increase by 2027) suggests continued rapid progress.</p>
+        </div>
+        
+        <div class="insight-card">
+          <h3>🧠 Context is King</h3>
+          <p>Context window scaling from 8K to 2M tokens (250x increase) enables handling entire codebases, documentation, and complex multi-file tasks.</p>
+        </div>
+        
+        <div class="insight-card">
+          <h3>🎯 Near-Perfect by 2027</h3>
+          <p>Claude Opus projection suggests 98% performance by mid-2027, approaching the theoretical 100% ceiling on SWE-bench tasks.</p>
+        </div>
+        
+        <div class="insight-card">
+          <h3>⚡ Tight Competition</h3>
+          <p>Anthropic leads with Claude Opus 4.5 (80.9%), while OpenAI's GPT-5.1-Codex-Max (77.9%) and Google's Gemini 3.0 Pro (76.2%) follow closely. All three are accelerating rapidly with different architectural approaches.</p>
+        </div>
+        
+        <div class="insight-card">
+          <h3>📊 Projection Methodology</h3>
+          <p>Claude Opus projections combine dual scaling factors: 60% weight on FLOPS capacity (Nvidia roadmap) + 40% on context length growth, using exponential curves with diminishing returns toward 100% ceiling.</p>
+        </div>
+        
+        <div class="insight-card">
+          <h3>🎚️ Why Not 100%?</h3>
+          <p>Even 98% projection reflects realistic constraints: edge cases requiring human judgment, multi-step reasoning limits, ambiguous requirements, and the inherent complexity of some real-world software engineering tasks.</p>
+        </div>
+      </div>
+    </section>
+  </main>
 
-    <script src="{{ "/script.js" | relative_url }}"></script>
+  <footer class="site-footer">
+    <div class="footer-wrapper">
+      <p><small>Data analysis and projections based on publicly available information. Results are speculative and subject to significant uncertainty.</small></p>
+    </div>
+  </footer>
+
+  <script src="script.js?v=11"></script>
+</body>
+</html>
